@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isometric Cube 512x256 - Tile Perfect</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .canvas-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        canvas {
+            border: 2px solid #333;
+            background: white;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            width: 400px;
+            height: 200px;
+        }
+        .canvas-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .canvas-label {
+            font-weight: bold;
+            color: #333;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #005fa3;
+        }
+        .info {
+            margin-top: 15px;
+            text-align: center;
+            color: #666;
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Isometric Cube 512x256 - Tile Perfect</h1>
+    
+    <div class="canvas-grid">
+        <div class="canvas-container">
+            <canvas id="completeCube" width="512" height="256"></canvas>
+            <div class="canvas-label">Complete Cube (512x256)</div>
+        </div>
+        <div class="canvas-container">
+            <canvas id="topFace" width="512" height="256"></canvas>
+            <div class="canvas-label">Top Face</div>
+        </div>
+        <div class="canvas-container">
+            <canvas id="leftFace" width="512" height="256"></canvas>
+            <div class="canvas-label">Left Face</div>
+        </div>
+        <div class="canvas-container">
+            <canvas id="rightFace" width="512" height="256"></canvas>
+            <div class="canvas-label">Right Face</div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="downloadAll()">Download All PNGs</button>
+        <button onclick="downloadFace('completeCube')">Download Complete</button>
+        <button onclick="downloadFace('topFace')">Download Top</button>
+        <button onclick="downloadFace('leftFace')">Download Left</button>
+        <button onclick="downloadFace('rightFace')">Download Right</button>
+    </div>
+    
+    <div class="info">
+        <p><strong>Perfect for 64x32 Tile Generation:</strong></p>
+        <p>• 512x256 resolution (8:1 scale to final 64x32) • Pure black 2px lines on white background<br>
+        • Edge-to-edge cube fills entire canvas • Perfect for flush tile alignment</p>
+    </div>
+
+    <script>
+        const canvases = {
+            completeCube: document.getElementById('completeCube'),
+            topFace: document.getElementById('topFace'),
+            leftFace: document.getElementById('leftFace'),
+            rightFace: document.getElementById('rightFace')
+        };
+        
+        const contexts = {};
+        Object.keys(canvases).forEach(key => {
+            contexts[key] = canvases[key].getContext('2d');
+            contexts[key].imageSmoothingEnabled = false;
+        });
+        
+        function drawPixelPerfectLine(ctx, x1, y1, x2, y2) {
+            // Round coordinates to pixel boundaries
+            x1 = Math.round(x1);
+            y1 = Math.round(y1);
+            x2 = Math.round(x2);
+            y2 = Math.round(y2);
+            
+            const dx = Math.abs(x2 - x1);
+            const dy = Math.abs(y2 - y1);
+            const sx = x1 < x2 ? 1 : -1;
+            const sy = y1 < y2 ? 1 : -1;
+            let err = dx - dy;
+            
+            let x = x1;
+            let y = y1;
+            
+            while (true) {
+                // Draw 2x2 pixel block for 2px line width
+                ctx.fillRect(x, y, 2, 2);
+                
+                if (x === x2 && y === y2) break;
+                
+                const e2 = 2 * err;
+                if (e2 > -dy) {
+                    err -= dy;
+                    x += sx;
+                }
+                if (e2 < dx) {
+                    err += dx;
+                    y += sy;
+                }
+            }
+        }
+        
+        function clearCanvas(ctx) {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, 512, 256);
+            ctx.fillStyle = '#000000';
+        }
+        
+        function getVertices() {
+            const centerX = 256;
+            const centerY = 128;
+            // Scale cube to fill most of the 512x256 canvas
+            const size = 120; // Adjusted for 512x256 canvas
+            
+            return {
+                top:         { x: centerX,        y: centerY - size },
+                right:       { x: centerX + size, y: centerY - size/2 },
+                bottom:      { x: centerX,        y: centerY },
+                left:        { x: centerX - size, y: centerY - size/2 },
+                bottomLeft:  { x: centerX - size, y: centerY + size/2 },
+                bottomRight: { x: centerX + size, y: centerY + size/2 },
+                frontBottom: { x: centerX,        y: centerY + size }
+            };
+        }
+        
+        function drawCompleteCube() {
+            const ctx = contexts.completeCube;
+            clearCanvas(ctx);
+            const vertices = getVertices();
+            
+            // Draw all edges
+            // Top face (diamond)
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.right.x, vertices.right.y);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottom.x, vertices.bottom.y);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.left.x, vertices.left.y);
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y);
+            
+            // Vertical edges
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.bottomLeft.x, vertices.bottomLeft.y);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottomRight.x, vertices.bottomRight.y);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.frontBottom.x, vertices.frontBottom.y);
+            
+            // Bottom edges
+            drawPixelPerfectLine(ctx, vertices.bottomLeft.x, vertices.bottomLeft.y, vertices.frontBottom.x, vertices.frontBottom.y);
+            drawPixelPerfectLine(ctx, vertices.bottomRight.x, vertices.bottomRight.y, vertices.frontBottom.x, vertices.frontBottom.y);
+        }
+        
+        function drawTopFace() {
+            const ctx = contexts.topFace;
+            clearCanvas(ctx);
+            const vertices = getVertices();
+            
+            // Top face only (diamond shape)
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.right.x, vertices.right.y);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottom.x, vertices.bottom.y);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.left.x, vertices.left.y);
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y);
+        }
+        
+        function drawLeftFace() {
+            const ctx = contexts.leftFace;
+            clearCanvas(ctx);
+            const vertices = getVertices();
+            
+            // Left face only (parallelogram)
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y);
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.bottom.x, vertices.bottom.y);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.bottomLeft.x, vertices.bottomLeft.y);
+            drawPixelPerfectLine(ctx, vertices.bottomLeft.x, vertices.bottomLeft.y, vertices.left.x, vertices.left.y);
+        }
+        
+        function drawRightFace() {
+            const ctx = contexts.rightFace;
+            clearCanvas(ctx);
+            const vertices = getVertices();
+            
+            // Right face only (parallelogram)
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.top.x, vertices.top.y);
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.bottom.x, vertices.bottom.y);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.bottomRight.x, vertices.bottomRight.y);
+            drawPixelPerfectLine(ctx, vertices.bottomRight.x, vertices.bottomRight.y, vertices.right.x, vertices.right.y);
+        }
+        
+        function downloadFace(canvasId) {
+            const canvas = canvases[canvasId];
+            const link = document.createElement('a');
+            link.download = `isometric_${canvasId}_512x256.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function downloadAll() {
+            Object.keys(canvases).forEach(canvasId => {
+                setTimeout(() => downloadFace(canvasId), 100 * Object.keys(canvases).indexOf(canvasId));
+            });
+        }
+        
+        // Draw all faces
+        drawCompleteCube();
+        drawTopFace();
+        drawLeftFace();
+        drawRightFace();
+    </script>
+</body>
+</html>
