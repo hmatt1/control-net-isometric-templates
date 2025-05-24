@@ -191,31 +191,21 @@
             x2 = Math.round(x2);
             y2 = Math.round(y2);
             
-            const dx = Math.abs(x2 - x1);
-            const dy = Math.abs(y2 - y1);
-            const sx = x1 < x2 ? 1 : -1;
-            const sy = y1 < y2 ? 1 : -1;
-            let err = dx - dy;
+            // Use canvas line drawing with proper settings for pixel-perfect lines
+            ctx.save();
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'square';
+            ctx.lineJoin = 'miter';
+            ctx.imageSmoothingEnabled = false;
             
-            let x = x1;
-            let y = y1;
+            // For pixel-perfect lines, we need to offset by 0.5 for odd line widths
+            const offset = (lineWidth % 2) * 0.5;
             
-            while (true) {
-                // Draw line with specified width
-                ctx.fillRect(x, y, lineWidth, lineWidth);
-                
-                if (x === x2 && y === y2) break;
-                
-                const e2 = 2 * err;
-                if (e2 > -dy) {
-                    err -= dy;
-                    x += sx;
-                }
-                if (e2 < dx) {
-                    err += dx;
-                    y += sy;
-                }
-            }
+            ctx.beginPath();
+            ctx.moveTo(x1 + offset, y1 + offset);
+            ctx.lineTo(x2 + offset, y2 + offset);
+            ctx.stroke();
+            ctx.restore();
         }
         
         function clearCanvas(ctx) {
