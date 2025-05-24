@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isometric Cube 512x256 - Tile Perfect</title>
+    <title>Isometric Cube Generator - 1024x1024 Canvas</title>
     <style>
         body {
             margin: 0;
@@ -14,9 +14,39 @@
             align-items: center;
             font-family: Arial, sans-serif;
         }
+        .controls-top {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .control-group label {
+            font-weight: bold;
+            font-size: 12px;
+            color: #555;
+        }
+        .control-group input {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 80px;
+            text-align: center;
+        }
         .canvas-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-top: 20px;
         }
@@ -26,8 +56,8 @@
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
-            width: 400px;
-            height: 200px;
+            width: 300px;
+            height: 300px;
         }
         .canvas-container {
             display: flex;
@@ -38,8 +68,9 @@
         .canvas-label {
             font-weight: bold;
             color: #333;
+            text-align: center;
         }
-        .controls {
+        .controls-bottom {
             margin-top: 20px;
             display: flex;
             gap: 10px;
@@ -59,6 +90,13 @@
         button:hover {
             background: #005fa3;
         }
+        .update-btn {
+            background: #28a745;
+            font-weight: bold;
+        }
+        .update-btn:hover {
+            background: #218838;
+        }
         .info {
             margin-top: 15px;
             text-align: center;
@@ -68,39 +106,66 @@
     </style>
 </head>
 <body>
-    <h1>Isometric Cube 512x256 - Tile Perfect</h1>
+    <h1>Isometric Cube Generator - 1024x1024 Canvas</h1>
+    
+    <div class="controls-top">
+        <div class="control-group">
+            <label>Cube Width</label>
+            <input type="number" id="cubeWidth" value="512" min="100" max="800">
+        </div>
+        <div class="control-group">
+            <label>Cube Height</label>
+            <input type="number" id="cubeHeight" value="256" min="50" max="400">
+        </div>
+        <div class="control-group">
+            <label>Line Width</label>
+            <input type="number" id="lineWidth" value="2" min="1" max="5">
+        </div>
+        <button class="update-btn" onclick="updateAllCubes()">Update Cubes</button>
+    </div>
     
     <div class="canvas-grid">
         <div class="canvas-container">
-            <canvas id="completeCube" width="512" height="256"></canvas>
-            <div class="canvas-label">Complete Cube (512x256)</div>
+            <canvas id="completeCube" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Complete Cube</div>
         </div>
         <div class="canvas-container">
-            <canvas id="topFace" width="512" height="256"></canvas>
+            <canvas id="topFace" width="1024" height="1024"></canvas>
             <div class="canvas-label">Top Face</div>
         </div>
         <div class="canvas-container">
-            <canvas id="leftFace" width="512" height="256"></canvas>
+            <canvas id="leftFace" width="1024" height="1024"></canvas>
             <div class="canvas-label">Left Face</div>
         </div>
         <div class="canvas-container">
-            <canvas id="rightFace" width="512" height="256"></canvas>
+            <canvas id="rightFace" width="1024" height="1024"></canvas>
             <div class="canvas-label">Right Face</div>
+        </div>
+        <div class="canvas-container">
+            <canvas id="bottomFace" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Bottom Face</div>
+        </div>
+        <div class="canvas-container">
+            <canvas id="wireframe" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Wireframe Only</div>
         </div>
     </div>
     
-    <div class="controls">
+    <div class="controls-bottom">
         <button onclick="downloadAll()">Download All PNGs</button>
         <button onclick="downloadFace('completeCube')">Download Complete</button>
         <button onclick="downloadFace('topFace')">Download Top</button>
         <button onclick="downloadFace('leftFace')">Download Left</button>
         <button onclick="downloadFace('rightFace')">Download Right</button>
+        <button onclick="downloadFace('bottomFace')">Download Bottom</button>
+        <button onclick="downloadFace('wireframe')">Download Wireframe</button>
     </div>
     
     <div class="info">
-        <p><strong>Perfect for 64x32 Tile Generation:</strong></p>
-        <p>• 512x256 resolution (8:1 scale to final 64x32) • Pure black 2px lines on white background<br>
-        • Edge-to-edge cube fills entire canvas • Perfect for flush tile alignment</p>
+        <p><strong>Perfect for ComfyUI ControlNet:</strong></p>
+        <p>• 1024x1024 canvas matches your workflow • Adjustable cube dimensions<br>
+        • Half-height option for landscape elements • All faces for specialized control</p>
+        <p><strong>Quick Settings:</strong> Full cube (512x256) → 128x64 final | Half cube (512x128) → 128x32 final</p>
     </div>
 
     <script>
@@ -108,7 +173,9 @@
             completeCube: document.getElementById('completeCube'),
             topFace: document.getElementById('topFace'),
             leftFace: document.getElementById('leftFace'),
-            rightFace: document.getElementById('rightFace')
+            rightFace: document.getElementById('rightFace'),
+            bottomFace: document.getElementById('bottomFace'),
+            wireframe: document.getElementById('wireframe')
         };
         
         const contexts = {};
@@ -117,7 +184,7 @@
             contexts[key].imageSmoothingEnabled = false;
         });
         
-        function drawPixelPerfectLine(ctx, x1, y1, x2, y2) {
+        function drawPixelPerfectLine(ctx, x1, y1, x2, y2, lineWidth = 2) {
             // Round coordinates to pixel boundaries
             x1 = Math.round(x1);
             y1 = Math.round(y1);
@@ -134,8 +201,8 @@
             let y = y1;
             
             while (true) {
-                // Draw 2x2 pixel block for 2px line width
-                ctx.fillRect(x, y, 2, 2);
+                // Draw line with specified width
+                ctx.fillRect(x, y, lineWidth, lineWidth);
                 
                 if (x === x2 && y === y2) break;
                 
@@ -153,24 +220,24 @@
         
         function clearCanvas(ctx) {
             ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, 512, 256);
+            ctx.fillRect(0, 0, 1024, 1024);
             ctx.fillStyle = '#000000';
         }
         
         function getVertices() {
-            const centerX = 256;
-            const centerY = 128;
-            // Scale cube to fill most of the 512x256 canvas
-            const size = 120; // Adjusted for 512x256 canvas
+            const centerX = 512;
+            const centerY = 512;
+            const width = parseInt(document.getElementById('cubeWidth').value) / 2;
+            const height = parseInt(document.getElementById('cubeHeight').value);
             
             return {
-                top:         { x: centerX,        y: centerY - size },
-                right:       { x: centerX + size, y: centerY - size/2 },
-                bottom:      { x: centerX,        y: centerY },
-                left:        { x: centerX - size, y: centerY - size/2 },
-                bottomLeft:  { x: centerX - size, y: centerY + size/2 },
-                bottomRight: { x: centerX + size, y: centerY + size/2 },
-                frontBottom: { x: centerX,        y: centerY + size }
+                top:         { x: centerX,       y: centerY - height },
+                right:       { x: centerX + width, y: centerY - height/2 },
+                bottom:      { x: centerX,       y: centerY },
+                left:        { x: centerX - width, y: centerY - height/2 },
+                bottomLeft:  { x: centerX - width, y: centerY + height/2 },
+                bottomRight: { x: centerX + width, y: centerY + height/2 },
+                frontBottom: { x: centerX,       y: centerY + height }
             };
         }
         
@@ -178,79 +245,155 @@
             const ctx = contexts.completeCube;
             clearCanvas(ctx);
             const vertices = getVertices();
+            const lineWidth = parseInt(document.getElementById('lineWidth').value);
             
-            // Draw all edges
+            // Draw all edges for complete cube
             // Top face (diamond)
-            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.right.x, vertices.right.y);
-            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottom.x, vertices.bottom.y);
-            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.left.x, vertices.left.y);
-            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y);
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.right.x, vertices.right.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottom.x, vertices.bottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.left.x, vertices.left.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y, lineWidth);
             
             // Vertical edges
-            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.bottomLeft.x, vertices.bottomLeft.y);
-            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottomRight.x, vertices.bottomRight.y);
-            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.frontBottom.x, vertices.frontBottom.y);
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.bottomLeft.x, vertices.bottomLeft.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottomRight.x, vertices.bottomRight.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.frontBottom.x, vertices.frontBottom.y, lineWidth);
             
             // Bottom edges
-            drawPixelPerfectLine(ctx, vertices.bottomLeft.x, vertices.bottomLeft.y, vertices.frontBottom.x, vertices.frontBottom.y);
-            drawPixelPerfectLine(ctx, vertices.bottomRight.x, vertices.bottomRight.y, vertices.frontBottom.x, vertices.frontBottom.y);
+            drawPixelPerfectLine(ctx, vertices.bottomLeft.x, vertices.bottomLeft.y, vertices.frontBottom.x, vertices.frontBottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottomRight.x, vertices.bottomRight.y, vertices.frontBottom.x, vertices.frontBottom.y, lineWidth);
         }
         
         function drawTopFace() {
             const ctx = contexts.topFace;
             clearCanvas(ctx);
             const vertices = getVertices();
+            const lineWidth = parseInt(document.getElementById('lineWidth').value);
             
             // Top face only (diamond shape)
-            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.right.x, vertices.right.y);
-            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottom.x, vertices.bottom.y);
-            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.left.x, vertices.left.y);
-            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y);
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.right.x, vertices.right.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottom.x, vertices.bottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.left.x, vertices.left.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y, lineWidth);
         }
         
         function drawLeftFace() {
             const ctx = contexts.leftFace;
             clearCanvas(ctx);
             const vertices = getVertices();
+            const lineWidth = parseInt(document.getElementById('lineWidth').value);
             
             // Left face only (parallelogram)
-            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y);
-            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.bottom.x, vertices.bottom.y);
-            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.bottomLeft.x, vertices.bottomLeft.y);
-            drawPixelPerfectLine(ctx, vertices.bottomLeft.x, vertices.bottomLeft.y, vertices.left.x, vertices.left.y);
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.bottom.x, vertices.bottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.bottomLeft.x, vertices.bottomLeft.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottomLeft.x, vertices.bottomLeft.y, vertices.left.x, vertices.left.y, lineWidth);
         }
         
         function drawRightFace() {
             const ctx = contexts.rightFace;
             clearCanvas(ctx);
             const vertices = getVertices();
+            const lineWidth = parseInt(document.getElementById('lineWidth').value);
             
             // Right face only (parallelogram)
-            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.top.x, vertices.top.y);
-            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.bottom.x, vertices.bottom.y);
-            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.bottomRight.x, vertices.bottomRight.y);
-            drawPixelPerfectLine(ctx, vertices.bottomRight.x, vertices.bottomRight.y, vertices.right.x, vertices.right.y);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.top.x, vertices.top.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.bottom.x, vertices.bottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.bottomRight.x, vertices.bottomRight.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottomRight.x, vertices.bottomRight.y, vertices.right.x, vertices.right.y, lineWidth);
+        }
+        
+        function drawBottomFace() {
+            const ctx = contexts.bottomFace;
+            clearCanvas(ctx);
+            const vertices = getVertices();
+            const lineWidth = parseInt(document.getElementById('lineWidth').value);
+            
+            // Bottom face only (diamond shape, same as top but at bottom position)
+            drawPixelPerfectLine(ctx, vertices.bottomLeft.x, vertices.bottomLeft.y, vertices.bottom.x, vertices.bottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.bottomRight.x, vertices.bottomRight.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottomRight.x, vertices.bottomRight.y, vertices.frontBottom.x, vertices.frontBottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.frontBottom.x, vertices.frontBottom.y, vertices.bottomLeft.x, vertices.bottomLeft.y, lineWidth);
+        }
+        
+        function drawWireframe() {
+            const ctx = contexts.wireframe;
+            clearCanvas(ctx);
+            const vertices = getVertices();
+            const lineWidth = Math.max(1, parseInt(document.getElementById('lineWidth').value) - 1);
+            
+            // Draw all edges in wireframe style (thinner lines)
+            // Top face
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.right.x, vertices.right.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottom.x, vertices.bottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.left.x, vertices.left.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.top.x, vertices.top.y, lineWidth);
+            
+            // Vertical edges
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.bottomLeft.x, vertices.bottomLeft.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottomRight.x, vertices.bottomRight.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottom.x, vertices.bottom.y, vertices.frontBottom.x, vertices.frontBottom.y, lineWidth);
+            
+            // Bottom edges
+            drawPixelPerfectLine(ctx, vertices.bottomLeft.x, vertices.bottomLeft.y, vertices.frontBottom.x, vertices.frontBottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.bottomRight.x, vertices.bottomRight.y, vertices.frontBottom.x, vertices.frontBottom.y, lineWidth);
+            
+            // Hidden edges (dashed effect by drawing every other pixel - simplified to lighter lines)
+            ctx.globalAlpha = 0.5;
+            drawPixelPerfectLine(ctx, vertices.top.x, vertices.top.y, vertices.frontBottom.x, vertices.frontBottom.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.left.x, vertices.left.y, vertices.bottomRight.x, vertices.bottomRight.y, lineWidth);
+            drawPixelPerfectLine(ctx, vertices.right.x, vertices.right.y, vertices.bottomLeft.x, vertices.bottomLeft.y, lineWidth);
+            ctx.globalAlpha = 1.0;
+        }
+        
+        function updateAllCubes() {
+            drawCompleteCube();
+            drawTopFace();
+            drawLeftFace();
+            drawRightFace();
+            drawBottomFace();
+            drawWireframe();
         }
         
         function downloadFace(canvasId) {
             const canvas = canvases[canvasId];
+            const width = document.getElementById('cubeWidth').value;
+            const height = document.getElementById('cubeHeight').value;
             const link = document.createElement('a');
-            link.download = `isometric_${canvasId}_512x256.png`;
+            link.download = `isometric_${canvasId}_${width}x${height}_1024x1024.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         }
         
         function downloadAll() {
-            Object.keys(canvases).forEach(canvasId => {
-                setTimeout(() => downloadFace(canvasId), 100 * Object.keys(canvases).indexOf(canvasId));
+            Object.keys(canvases).forEach((canvasId, index) => {
+                setTimeout(() => downloadFace(canvasId), 100 * index);
             });
         }
         
-        // Draw all faces
-        drawCompleteCube();
-        drawTopFace();
-        drawLeftFace();
-        drawRightFace();
+        // Add presets for common sizes
+        function setPreset(width, height) {
+            document.getElementById('cubeWidth').value = width;
+            document.getElementById('cubeHeight').value = height;
+            updateAllCubes();
+        }
+        
+        // Initialize with default values
+        updateAllCubes();
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && (e.target.id === 'cubeWidth' || e.target.id === 'cubeHeight' || e.target.id === 'lineWidth')) {
+                updateAllCubes();
+            }
+        });
     </script>
+    
+    <!-- Quick preset buttons -->
+    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+        <button onclick="setPreset(512, 256)" style="background: #6c757d;">Full Cube (512x256)</button>
+        <button onclick="setPreset(512, 128)" style="background: #6c757d;">Half Height (512x128)</button>
+        <button onclick="setPreset(256, 128)" style="background: #6c757d;">Quarter Cube (256x128)</button>
+    </div>
 </body>
 </html>
