@@ -63,18 +63,18 @@
         }
         .canvas-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-top: 20px;
-            max-width: 1200px;
+            max-width: 1600px;
         }
         canvas {
             border: 2px solid #333;
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
-            width: 512px;
-            height: 512px;
+            width: 384px;
+            height: 384px;
         }
         .canvas-container {
             display: flex;
@@ -86,7 +86,8 @@
             font-weight: bold;
             color: #333;
             text-align: center;
-            font-size: 14px;
+            font-size: 12px;
+            line-height: 1.2;
         }
         .controls-bottom {
             margin-top: 20px;
@@ -95,7 +96,7 @@
             align-items: center;
             flex-wrap: wrap;
             justify-content: center;
-            max-width: 1200px;
+            max-width: 1600px;
         }
         button {
             padding: 10px 20px;
@@ -141,7 +142,7 @@
     </style>
 </head>
 <body>
-    <h1>Isometric Cube Generator - All Styles</h1>
+    <h1>Isometric Cube Generator - All Styles (24 Variants)</h1>
     
     <div class="controls-top">
         <div class="preset-group">
@@ -159,135 +160,159 @@
     </div>
     
     <div class="canvas-grid">
-        <!-- Row 1 -->
+        <!-- Complete Cube Row -->
         <div class="canvas-container">
             <canvas id="completeCube_outline" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Complete Cube - Outline</div>
+            <div class="canvas-label">Complete Cube<br>Outline</div>
         </div>
         <div class="canvas-container">
             <canvas id="completeCube_solid" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Complete Cube - Solid</div>
+            <div class="canvas-label">Complete Cube<br>Solid</div>
         </div>
-        
-        <!-- Row 2 -->
         <div class="canvas-container">
             <canvas id="completeCube_inverted" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Complete Cube - Inverted</div>
+            <div class="canvas-label">Complete Cube<br>Inverted</div>
         </div>
         <div class="canvas-container">
-            <canvas id="topFace_outline" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Top Face - Outline</div>
+            <canvas id="completeCube_double_inverted" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Complete Cube<br>Double Inverted</div>
         </div>
         
-        <!-- Row 3 -->
+        <!-- Top Face Row -->
+        <div class="canvas-container">
+            <canvas id="topFace_outline" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Top Face<br>Outline</div>
+        </div>
         <div class="canvas-container">
             <canvas id="topFace_solid" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Top Face - Solid</div>
+            <div class="canvas-label">Top Face<br>Solid</div>
         </div>
         <div class="canvas-container">
             <canvas id="topFace_inverted" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Top Face - Inverted</div>
+            <div class="canvas-label">Top Face<br>Inverted</div>
+        </div>
+        <div class="canvas-container">
+            <canvas id="topFace_double_inverted" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Top Face<br>Double Inverted</div>
         </div>
         
-        <!-- Row 4 -->
+        <!-- Left Face Row -->
         <div class="canvas-container">
             <canvas id="leftFace_outline" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Left Face - Outline</div>
+            <div class="canvas-label">Left Face<br>Outline</div>
         </div>
         <div class="canvas-container">
             <canvas id="leftFace_solid" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Left Face - Solid</div>
+            <div class="canvas-label">Left Face<br>Solid</div>
         </div>
-        
-        <!-- Row 5 -->
         <div class="canvas-container">
             <canvas id="leftFace_inverted" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Left Face - Inverted</div>
+            <div class="canvas-label">Left Face<br>Inverted</div>
         </div>
         <div class="canvas-container">
-            <canvas id="rightFace_outline" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Right Face - Outline</div>
+            <canvas id="leftFace_double_inverted" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Left Face<br>Double Inverted</div>
         </div>
         
-        <!-- Row 6 -->
+        <!-- Right Face Row -->
+        <div class="canvas-container">
+            <canvas id="rightFace_outline" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Right Face<br>Outline</div>
+        </div>
         <div class="canvas-container">
             <canvas id="rightFace_solid" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Right Face - Solid</div>
+            <div class="canvas-label">Right Face<br>Solid</div>
         </div>
         <div class="canvas-container">
             <canvas id="rightFace_inverted" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Right Face - Inverted</div>
+            <div class="canvas-label">Right Face<br>Inverted</div>
+        </div>
+        <div class="canvas-container">
+            <canvas id="rightFace_double_inverted" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Right Face<br>Double Inverted</div>
         </div>
         
-        <!-- Row 7 -->
+        <!-- Bottom Face Row -->
         <div class="canvas-container">
             <canvas id="bottomFace_outline" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Bottom Face - Outline</div>
+            <div class="canvas-label">Bottom Face<br>Outline</div>
         </div>
         <div class="canvas-container">
             <canvas id="bottomFace_solid" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Bottom Face - Solid</div>
+            <div class="canvas-label">Bottom Face<br>Solid</div>
         </div>
-        
-        <!-- Row 8 -->
         <div class="canvas-container">
             <canvas id="bottomFace_inverted" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Bottom Face - Inverted</div>
+            <div class="canvas-label">Bottom Face<br>Inverted</div>
         </div>
         <div class="canvas-container">
-            <canvas id="wireframe_outline" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Wireframe - Outline</div>
+            <canvas id="bottomFace_double_inverted" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Bottom Face<br>Double Inverted</div>
         </div>
         
-        <!-- Row 9 -->
+        <!-- Wireframe Row -->
+        <div class="canvas-container">
+            <canvas id="wireframe_outline" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Wireframe<br>Outline</div>
+        </div>
         <div class="canvas-container">
             <canvas id="wireframe_solid" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Wireframe - Solid</div>
+            <div class="canvas-label">Wireframe<br>Solid</div>
         </div>
         <div class="canvas-container">
             <canvas id="wireframe_inverted" width="1024" height="1024"></canvas>
-            <div class="canvas-label">Wireframe - Inverted</div>
+            <div class="canvas-label">Wireframe<br>Inverted</div>
+        </div>
+        <div class="canvas-container">
+            <canvas id="wireframe_double_inverted" width="1024" height="1024"></canvas>
+            <div class="canvas-label">Wireframe<br>Double Inverted</div>
         </div>
     </div>
     
     <div class="controls-bottom">
         <div class="download-section">
-            <button onclick="downloadAll()" style="background: #dc3545; font-size: 16px; padding: 12px 24px;">Download All 18 PNGs</button>
+            <button onclick="downloadAll()" style="background: #dc3545; font-size: 16px; padding: 12px 24px;">Download All 24 PNGs</button>
             
             <div class="download-row">
                 <button class="download-btn" onclick="downloadFace('completeCube_outline')">Complete - Outline</button>
                 <button class="download-btn" onclick="downloadFace('completeCube_solid')">Complete - Solid</button>
                 <button class="download-btn" onclick="downloadFace('completeCube_inverted')">Complete - Inverted</button>
+                <button class="download-btn" onclick="downloadFace('completeCube_double_inverted')">Complete - Double Inv</button>
             </div>
             
             <div class="download-row">
                 <button class="download-btn" onclick="downloadFace('topFace_outline')">Top - Outline</button>
                 <button class="download-btn" onclick="downloadFace('topFace_solid')">Top - Solid</button>
                 <button class="download-btn" onclick="downloadFace('topFace_inverted')">Top - Inverted</button>
+                <button class="download-btn" onclick="downloadFace('topFace_double_inverted')">Top - Double Inv</button>
             </div>
             
             <div class="download-row">
                 <button class="download-btn" onclick="downloadFace('leftFace_outline')">Left - Outline</button>
                 <button class="download-btn" onclick="downloadFace('leftFace_solid')">Left - Solid</button>
                 <button class="download-btn" onclick="downloadFace('leftFace_inverted')">Left - Inverted</button>
+                <button class="download-btn" onclick="downloadFace('leftFace_double_inverted')">Left - Double Inv</button>
             </div>
             
             <div class="download-row">
                 <button class="download-btn" onclick="downloadFace('rightFace_outline')">Right - Outline</button>
                 <button class="download-btn" onclick="downloadFace('rightFace_solid')">Right - Solid</button>
                 <button class="download-btn" onclick="downloadFace('rightFace_inverted')">Right - Inverted</button>
+                <button class="download-btn" onclick="downloadFace('rightFace_double_inverted')">Right - Double Inv</button>
             </div>
             
             <div class="download-row">
                 <button class="download-btn" onclick="downloadFace('bottomFace_outline')">Bottom - Outline</button>
                 <button class="download-btn" onclick="downloadFace('bottomFace_solid')">Bottom - Solid</button>
                 <button class="download-btn" onclick="downloadFace('bottomFace_inverted')">Bottom - Inverted</button>
+                <button class="download-btn" onclick="downloadFace('bottomFace_double_inverted')">Bottom - Double Inv</button>
             </div>
             
             <div class="download-row">
                 <button class="download-btn" onclick="downloadFace('wireframe_outline')">Wire - Outline</button>
                 <button class="download-btn" onclick="downloadFace('wireframe_solid')">Wire - Solid</button>
                 <button class="download-btn" onclick="downloadFace('wireframe_inverted')">Wire - Inverted</button>
+                <button class="download-btn" onclick="downloadFace('wireframe_double_inverted')">Wire - Double Inv</button>
             </div>
         </div>
     </div>
@@ -295,8 +320,9 @@
     <div class="info">
         <p><strong>Perfect for ComfyUI ControlNet:</strong></p>
         <p>• 1024x1024 canvas • Fixed 512px width • Variable height presets<br>
-        • Three styles: Outline (lines only), Solid (filled shapes), Inverted (white on black)</p>
-        <p><strong>All 18 variations ready for download!</strong></p>
+        • Four styles: Outline (lines only), Solid (filled shapes), Inverted (white on black), Double Inverted (black on white)<br>
+        • 6 face types × 4 styles = 24 total variants</p>
+        <p><strong>All 24 variations ready for download!</strong></p>
     </div>
 
     <script>
@@ -305,7 +331,7 @@
         
         // Initialize all canvases and contexts
         const faceTypes = ['completeCube', 'topFace', 'leftFace', 'rightFace', 'bottomFace', 'wireframe'];
-        const styleTypes = ['outline', 'solid', 'inverted'];
+        const styleTypes = ['outline', 'solid', 'inverted', 'double_inverted'];
         
         faceTypes.forEach(face => {
             styleTypes.forEach(style => {
@@ -330,6 +356,9 @@
             if (style === 'inverted') {
                 ctx.strokeStyle = '#FFFFFF';
                 ctx.fillStyle = '#FFFFFF';
+            } else if (style === 'double_inverted') {
+                ctx.strokeStyle = '#000000';
+                ctx.fillStyle = '#000000';
             } else {
                 ctx.strokeStyle = '#000000';
                 ctx.fillStyle = '#000000';
@@ -357,7 +386,7 @@
         }
         
         function fillShape(ctx, vertices, style) {
-            if (style === 'solid' || style === 'inverted') {
+            if (style === 'solid' || style === 'inverted' || style === 'double_inverted') {
                 ctx.beginPath();
                 ctx.moveTo(vertices[0].x, vertices[0].y);
                 for (let i = 1; i < vertices.length; i++) {
