@@ -149,6 +149,7 @@
             <button class="preset-btn" onclick="setPreset(128)">Half Height (512x128)</button>
             <button class="preset-btn" onclick="setPreset(64)">Quarter Height (512x64)</button>
             <button class="preset-btn" onclick="setPreset(32)">Eighth Height (512x32)</button>
+            <button class="preset-btn" onclick="setPreset(16)">Sixteenth Height (512x16)</button>
         </div>
         <div class="control-group">
             <label>Custom Height</label>
@@ -377,7 +378,7 @@
             const isoHeight = 128;  // Half-height of the diamond (vertical distance, maintaining 2:1 ratio)
             
             // Fixed base position - bottom diamond always at the same level
-            const baseY = centerY + isoHeight;  // Bottom diamond bottom edge
+            const baseY = centerY + isoHeight + 256;  // Bottom diamond bottom edge
             
             return {
                 // Top diamond - moves up based on height
