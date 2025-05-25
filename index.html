@@ -370,17 +370,26 @@
         function getVertices() {
             const centerX = 512;
             const centerY = 512;
-            const width = 256; // Fixed at 512/2
             const height = parseInt(document.getElementById('cubeHeight').value);
             
+            // For true isometric pixel art: 2:1 line pattern (2 pixels horizontal : 1 pixel vertical)
+            const isoWidth = 256;  // Half-width of the diamond (horizontal distance from center)
+            const isoHeight = 128;  // Half-height of the diamond (vertical distance, maintaining 2:1 ratio)
+            
+            // Fixed base position - bottom diamond always at the same level
+            const baseY = centerY + isoHeight;  // Bottom diamond bottom edge
+            
             return {
-                top:         { x: centerX,       y: centerY - height },
-                right:       { x: centerX + width, y: centerY - height/2 },
-                bottom:      { x: centerX,       y: centerY },
-                left:        { x: centerX - width, y: centerY - height/2 },
-                bottomLeft:  { x: centerX - width, y: centerY + height/2 },
-                bottomRight: { x: centerX + width, y: centerY + height/2 },
-                frontBottom: { x: centerX,       y: centerY + height }
+                // Top diamond - moves up based on height
+                top:         { x: centerX,            y: baseY - height - (isoHeight * 2) },
+                right:       { x: centerX + isoWidth, y: baseY - height - isoHeight },
+                bottom:      { x: centerX,            y: baseY - height },
+                left:        { x: centerX - isoWidth, y: baseY - height - isoHeight },
+                
+                // Bottom diamond - always at same position
+                bottomLeft:  { x: centerX - isoWidth, y: baseY - isoHeight },
+                bottomRight: { x: centerX + isoWidth, y: baseY - isoHeight },
+                frontBottom: { x: centerX,            y: baseY }
             };
         }
         
